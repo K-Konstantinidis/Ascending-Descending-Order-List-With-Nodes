@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#define NumberOfNodes 20
+#define NumberOfNodes 20 //Max nodes
 
 #define NilValue -1
 
@@ -11,12 +11,11 @@ typedef enum {
 } boolean;
 
 typedef int ListElementType;
-
 typedef int ListPointer;
 
 typedef struct {
-    ListElementType Data;
-    ListPointer Next;
+    ListElementType Data; //Data of the node
+    ListPointer Next;   //Pointer to the next node
 } NodeType;
 
 void InitializeStoragePool(NodeType Node[], ListPointer *FreePtr);
@@ -24,18 +23,14 @@ void CreateLList(ListPointer *List);
 boolean EmptyLList(ListPointer List);
 boolean FullLList(ListPointer FreePtr);
 void GetNode(ListPointer *P, ListPointer *FreePtr, NodeType Node[]);
-void ReleaseNode(NodeType Node[NumberOfNodes], ListPointer P, ListPointer *FreePtr);
 void Insert(ListPointer *List, NodeType Node[],ListPointer *FreePtr, ListPointer PredPtr, ListElementType Item);
-void Delete(ListPointer *List, NodeType Node[], ListPointer *FreePtr, ListPointer PredPtr);
 void TraverseLinked(ListPointer List, NodeType Node[]);
-
 void menu(int *choice);
-
 void sort_list(ListPointer *List, NodeType Node[], boolean Ascending);
 void swap(ListPointer PrevPtr, ListPointer CurrentPtr, ListPointer NextPtr, NodeType Node[], ListPointer *List);
 
 main(){
-    boolean Ascending;
+    boolean Ascending;  //If true then asc. else desc.
     ListPointer List, FreePtr, PredPtr = NilValue;
     NodeType Node[NumberOfNodes];
     ListElementType choice;
@@ -43,34 +38,34 @@ main(){
 
     CreateLList(&List);
 
-    InitializeStoragePool(Node, &FreePtr);
+    InitializeStoragePool(Node, &FreePtr);  //Pool with the nodes
 
     while(1){
         printf("Enter number of integers: ");
         scanf("%d",&n);
-        if(n > 1 && n < 20)break;
+        if(n > 1 && n < 20)break;   //Numbers must be more than 1 and less than 20
     }
 
     for(i=0; i<n; i++){
         printf("Enter an integer: ");
         scanf("%d",&Item);
-
         Insert(&List, Node, &FreePtr, PredPtr, Item);
     }
 
     menu(&choice);
 
     Ascending = TRUE;
-    if(choice == 2)
+    if(choice == 2) //If choice was desc.
         Ascending = FALSE;
 
     sort_list(&List, Node, Ascending);
 
-    TraverseLinked(List, Node);
+    TraverseLinked(List, Node); //Show the numbers
 
     system("PAUSE");
 }
 
+//Create 20 empty nodes
 void InitializeStoragePool(NodeType Node[], ListPointer *FreePtr){
     int i;
 
@@ -83,30 +78,29 @@ void InitializeStoragePool(NodeType Node[], ListPointer *FreePtr){
     *FreePtr=0;
 }
 
+//Create a list
 void CreateLList(ListPointer *List){
     *List=NilValue;
 }
 
+//Check if the list is empty
 boolean EmptyLList(ListPointer List){
     return (List==NilValue);
 }
 
+//Check if the list is full
 boolean FullLList(ListPointer FreePtr){
     return (FreePtr == NilValue);
 }
 
+//Get a node
 void GetNode(ListPointer *P, ListPointer *FreePtr, NodeType Node[]){
     *P = *FreePtr;
     if(!FullLList(*FreePtr))
         *FreePtr =Node[*FreePtr].Next;
 }
 
-void ReleaseNode(NodeType Node[], ListPointer P, ListPointer *FreePtr){
-    Node[P].Next =*FreePtr;
-    Node[P].Data = -1;
-    *FreePtr =P;
-}
-
+//Insert a node in the list
 void Insert(ListPointer *List, NodeType Node[],ListPointer *FreePtr, ListPointer PredPtr, ListElementType Item){
     ListPointer TempPtr;
     GetNode(&TempPtr,FreePtr,Node);
@@ -126,25 +120,7 @@ void Insert(ListPointer *List, NodeType Node[],ListPointer *FreePtr, ListPointer
         printf("Full List ...\n");
 }
 
-void Delete(ListPointer *List, NodeType Node[], ListPointer *FreePtr, ListPointer PredPtr){
-    ListPointer TempPtr ;
-
-    if(!EmptyLList(*List))
-        if(PredPtr == NilValue){
-            TempPtr =*List;
-            *List =Node[TempPtr].Next;
-            ReleaseNode(Node,TempPtr,FreePtr);
-        }
-        else
-        {
-            TempPtr =Node[PredPtr].Next;
-            Node[PredPtr].Next =Node[TempPtr].Next;
-            ReleaseNode(Node,TempPtr,FreePtr);
-        }
-    else
-        printf("Empty List ...\n");
-}
-
+//Show the data of the nodes
 void TraverseLinked(ListPointer List, NodeType Node[]){
     ListPointer CurrPtr;
 
